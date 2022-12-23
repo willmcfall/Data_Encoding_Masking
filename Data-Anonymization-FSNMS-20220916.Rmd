@@ -1,6 +1,6 @@
 ---
 title: "WFP SSCO Food Security Nutrition Monitoring System (FSNMS) - December 2021"
-subtitle: "WFP SSCO FSNMS Analysis Summary Statistics"
+subtitle: "WFP SSCO FSNMS Anonymization - Masking and Encoding"
 author: "William Mcfall - WFP South Sudan RAM Officer"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
