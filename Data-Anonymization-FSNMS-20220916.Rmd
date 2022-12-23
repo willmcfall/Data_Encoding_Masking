@@ -1,7 +1,7 @@
 ---
 title: "WFP SSCO Food Security Nutrition Monitoring System (FSNMS) - December 2021"
 subtitle: "WFP SSCO FSNMS Anonymization - Masking and Encoding"
-author: "William Mcfall - WFP South Sudan RAM Officer"
+author: "William McFall - WFP South Sudan RAM Officer"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
   html_document:
@@ -28,22 +28,17 @@ knitr::opts_chunk$set(
 	echo = FALSE,
 	message = FALSE,
 	warning = FALSE,
-	cache.path = "cache/html/" # set to ensure that cache directory functions properly... change path if output type changes
+	cache.path = "cache/html/" 
 )
-
-
 
 knitr::opts_knit$set(root.dir = 'XXX') 
 
-
 ```
-
 
 ```{r, echo=FALSE,out.width="30%", out.height="30%",fig.show='hold',fig.align='left'}
 knitr::include_graphics("XXX" )
 
 ```
-  
 
 ```{r load_packages}
 
@@ -89,7 +84,6 @@ library(rgdal)
 rural_fsnms_data <- read.spss("./Data Input/FSNMS_Round_27_Weights_Added.sav", use.value.labels = TRUE, to.data.frame = TRUE, use.missings = TRUE) 
 # glimpse(rural_fsnms_data)
 
-
 ## masking payam data
 str_trim(rural_fsnms_data$A06, side = c("both")) -> rural_fsnms_data$A06
 rural_fsnms_data %>% filter(A06 != "") %>% group_by(A06) %>% summarise(n = n()) %>% mutate(number = seq(1,n())) %>% mutate(encoded_name_payam = paste("Payam", as.character(number))) %>% select(A06, encoded_name_payam) -> x
@@ -102,22 +96,17 @@ rural_fsnms_data %>% filter(A07 != "") %>% group_by(A07) %>% summarise(n = n()) 
 str_trim(rural_fsnms_data$A08, side = c("both")) -> rural_fsnms_data$A08
 rural_fsnms_data %>% filter(A08 != "") %>% group_by(A08) %>% summarise(n = n()) %>% mutate(number = seq(1,n())) %>% mutate(encoded_name_village = paste("Village", as.character(number))) %>% select(A08, encoded_name_village) -> z
 
-
 ## masking GPS coordinates
 rural_fsnms_data %>% group_by(X._uuid) %>% mutate(masked_latitude = round(interview._A10_gps_latitude, 2), masked_longitude = round(interview._A10_gps_longitude, 2)) %>% select(X._uuid, interview._A10_gps_latitude, interview._A10_gps_longitude, masked_latitude, masked_longitude) -> a
-
 
 ## joined masked data
 rural_fsnms_data %>% left_join(x, by = 'A06') %>% left_join(y, by = 'A07') %>% left_join(z, by = 'A08') %>% left_join(a, by = 'X._uuid') -> rural_fsnms_masked_data
 
-
 ## create anonymized dataset
 rural_fsnms_masked_data %>% select(!c(A02, A03, A06, A07, A08, A09a, A09b, A10, cluster_id, A10_gps:interview._A10_gps_precision, X._parent_table_name:X._notes, interview._A10_gps_latitude.y, interview._A10_gps_longitude.y)) -> anon_fsnmsdata 
 
-
 ## create anonymized dataset masterkey
 rural_fsnms_masked_data %>% select(c(X._uuid, A02, A03, A06, A07, A08, A09a, A09b, A10, cluster_id, A10_gps:interview._A10_gps_precision, X._parent_table_name:X._notes, interview._A10_gps_latitude.y, interview._A10_gps_longitude.y, encoded_name_payam, encoded_name_boma, encoded_name_village)) -> anon_fsnmsdata_masterkey
-
 
 # Create blank workbook
 OUT <- createWorkbook()
@@ -142,8 +131,6 @@ writeData(OUT, sheet = "data", x = anon_fsnmsdata_masterkey)
 
 # Export the file
 saveWorkbook(OUT, "./Data Output/fsnms_round27_anonymized_masterkey.xlsx", overwrite = TRUE)
-
-
 
 ```
 
