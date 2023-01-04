@@ -84,15 +84,15 @@ library(rgdal)
 rural_fsnms_data <- read.spss("./Data Input/FSNMS_Round_27_Weights_Added.sav", use.value.labels = TRUE, to.data.frame = TRUE, use.missings = TRUE) 
 # glimpse(rural_fsnms_data)
 
-## masking payam data
+## encoding payam data
 str_trim(rural_fsnms_data$A06, side = c("both")) -> rural_fsnms_data$A06
 rural_fsnms_data %>% filter(A06 != "") %>% group_by(A06) %>% summarise(n = n()) %>% mutate(number = seq(1,n())) %>% mutate(encoded_name_payam = paste("Payam", as.character(number))) %>% select(A06, encoded_name_payam) -> x
 
-## masking boma data
+## encoding boma data
 str_trim(rural_fsnms_data$A07, side = c("both")) -> rural_fsnms_data$A07
 rural_fsnms_data %>% filter(A07 != "") %>% group_by(A07) %>% summarise(n = n()) %>% mutate(number = seq(1,n())) %>% mutate(encoded_name_boma = paste("Boma", as.character(number))) %>% select(A07, encoded_name_boma) -> y
 
-## masking village data
+## encoding village data
 str_trim(rural_fsnms_data$A08, side = c("both")) -> rural_fsnms_data$A08
 rural_fsnms_data %>% filter(A08 != "") %>% group_by(A08) %>% summarise(n = n()) %>% mutate(number = seq(1,n())) %>% mutate(encoded_name_village = paste("Village", as.character(number))) %>% select(A08, encoded_name_village) -> z
 
